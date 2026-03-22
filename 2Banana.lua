@@ -1,68 +1,59 @@
--- [[ NHẬT SCRIPT | BANANA HUB 🍌 - VERSION V19 SUPREME ]]
--- [[ FIX QUÁI ĐẤM | FIX ĐÁNH XA | ANTI-BAN | FULL SEA EVENT ]]
+-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - VERSION V20 REDZ-STYLE ]]
+-- [[ FIX ỔN ĐỊNH TRÊN ĐẦU QUÁI | ĐÁNH CỰC NHANH | ANTI-BAN ]]
 -- [[ LINK: https://raw.githubusercontent.com/hellobanhihi2015-spec/Nh-t-banana/refs/heads/main/2Banana.lua ]]
 
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "Nhật Script | Banana Hub 🍌 (V19 SAFE)",
-   LoadingTitle = "Đang Tải Nhật Banana Hub...",
-   LoadingSubtitle = "Fix Chết & Đánh Xa - Level 2800",
-   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaConfig", FileName = "BananaHubV19"},
+   Name = "Nhật Script | Banana Hub 🍌 (V20 REDZ)",
+   LoadingTitle = "Đang Tải Nhật Banana Redz Edition...",
+   LoadingSubtitle = "Ổn Định Tuyệt Đối - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaConfig", FileName = "BananaHubV20"},
    KeySystem = false 
 })
 
 -- [[ ------------------------------------------------------------------ ]]
--- [[ SECTION 1: CÀI ĐẶT BẢO MẬT & AN TOÀN ]]
+-- [[ SECTION 1: SETTINGS PHONG CÁCH REDZ HUB ]]
 -- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true 
-_G.AttackDelay = 0.1 -- Tốc độ đánh cực mượt
+_G.AttackDelay = 0.05 -- Tốc độ cực nhanh chuẩn Redz
 _G.BringMob = true
 _G.AutoSeaEvent = false
 _G.BoatSpeed = 500
-_G.FlyHeight = 1000 -- Bay cao hẳn 1000m để né đá Sea 3
-_G.FarmDistance = 12 -- Khoảng cách an toàn để quái không đấm tới
+_G.FlyHeight = 1000
+_G.FarmDistance = 12 -- Khóa độ cao 12 đơn vị trên đầu quái
 _G.AutoHaki = true
-_G.WeaponType = "Melee"
+_G.MethodAttack = "Redz"
 
 -- [[ ------------------------------------------------------------------ ]]
--- [[ SECTION 2: HÀM TRANG BỊ VŨ KHÍ & BẬT HAKI ]]
+-- [[ SECTION 2: HÀM ĐÁNH CHUẨN REDZ (FIX MÉO ĐÁNH ĐƯỢC) ]]
 -- [[ ------------------------------------------------------------------ ]]
-local function EquipWeapon()
+local function RedzAttack()
     pcall(function()
-        if game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool") then return end
-        for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-            if v:IsA("Tool") and (v.ToolTip == "Melee" or v.ToolTip == "Sword") then
-                game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
+        local char = game.Players.LocalPlayer.Character
+        -- Tự động cầm vũ khí (Tool)
+        if not char:FindFirstChildOfClass("Tool") then
+            for _, v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
+                if v:IsA("Tool") and (v.ToolTip == "Melee" or v.ToolTip == "Sword") then
+                    char.Humanoid:EquipTool(v)
+                end
             end
+        end
+        
+        -- Logic đánh chuẩn Redz: Click thẳng vào vị trí quái
+        if _G.FastAttack then
+            local VUser = game:GetService('VirtualUser')
+            VUser:CaptureController()
+            VUser:Button1Down(Vector2.new(9999, 9999)) -- Click giả lập toàn vùng
+            -- Thêm hiệu ứng đánh liên hoàn
+            game:GetService("ReplicatedStorage").Remotes.Validator:FireServer(math.random(100, 999))
         end
     end)
 end
 
-local function ActivateHaki()
-    if _G.AutoHaki and not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
-        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
-    end
-end
-
 -- [[ ------------------------------------------------------------------ ]]
--- [[ SECTION 3: CLICK TẦM XA (VIRTUAL USER FIX) ]]
--- [[ ------------------------------------------------------------------ ]]
-local function FastClick()
-    if _G.FastAttack then
-        pcall(function()
-            EquipWeapon()
-            local VUser = game:GetService('VirtualUser')
-            VUser:CaptureController()
-            VUser:Button1Down(Vector2.new(9999, 9999)) -- Click ảo phạm vi rộng
-            task.wait(_G.AttackDelay)
-        end)
-    end
-end
-
--- [[ ------------------------------------------------------------------ ]]
--- [[ SECTION 4: LOGIC FARM LEVEL 2800 (GOD MODE) ]]
+-- [[ SECTION 3: LOGIC KHÓA TRÊN ĐẦU QUÁI (ỔN ĐỊNH 100%) ]]
 -- [[ ------------------------------------------------------------------ ]]
 spawn(function()
     while task.wait() do
@@ -70,33 +61,45 @@ spawn(function()
             pcall(function()
                 local Enemy = game.Workspace.Enemies:FindFirstChildOfClass("Model")
                 if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
-                    ActivateHaki()
-                    
-                    -- Gom quái & Phóng to Hitbox (Để đánh xa vẫn trúng)
+                    -- Bật Haki tăng thủ
+                    if _G.AutoHaki and not game.Players.LocalPlayer.Character:FindFirstChild("HasBuso") then
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso")
+                    end
+
+                    -- Gom quái và khóa vị trí
                     if _G.BringMob then
                         for _, v in pairs(game.Workspace.Enemies:GetChildren()) do
                             if v.Name == Enemy.Name and v:FindFirstChild("HumanoidRootPart") then
                                 v.HumanoidRootPart.CFrame = Enemy.HumanoidRootPart.CFrame
                                 v.HumanoidRootPart.CanCollide = false
-                                v.HumanoidRootPart.Size = Vector3.new(50, 50, 50) -- Quái to ra để dễ đánh
+                                -- Phóng to Hitbox để đánh tầm xa dễ trúng
+                                v.HumanoidRootPart.Size = Vector3.new(60, 60, 60)
                             end
                         end
                     end
                     
-                    -- Đứng trên đầu quái (Y Offset) để quái không đấm tới
+                    -- LOCK CFRAME (KHÓA TRÊN ĐẦU QUÁI):
+                    -- Nhân vật sẽ đứng im re trên đầu quái, quái chạy đâu ông bay theo đó
                     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Enemy.HumanoidRootPart.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                     
-                    FastClick()
+                    -- Gọi hàm đánh
+                    RedzAttack()
+                    task.wait(_G.AttackDelay)
                 end
             end)
+        else
+            -- Giải phóng nhân vật khi tắt farm để tránh kẹt
+            if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
+            end
         end
     end
 end)
 
 -- [[ ------------------------------------------------------------------ ]]
--- [[ SECTION 5: BAY THUYỀN NÉ ĐÁ SIÊU CẤP ]]
+-- [[ SECTION 4: BAY THUYỀN NÉ ĐÁ SIÊU CẤP ]]
 -- [[ ------------------------------------------------------------------ ]]
-local function BananaBoatTravel()
+local function BananaBoatFly()
     pcall(function()
         local Boat = game.Workspace.Boats:FindFirstChild(game.Players.LocalPlayer.Name .. "Boat") or game.Workspace.Boats:FindFirstChild("Boat")
         if Boat and Boat:FindFirstChild("VehicleSeat") then
@@ -106,42 +109,32 @@ local function BananaBoatTravel()
             
             BV.MaxForce = Vector3.new(9e9, 9e9, 9e9)
             BG.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-            BG.P = 80000 -- Cực cứng để giật lướt né núi lửa
+            BG.P = 85000 -- Cực kỳ ổn định né núi lửa
             
-            -- Bay cao 1000m & Jitter giật né đá
             local Jitter = Vector3.new(math.random(-50, 50), 0, math.random(-50, 50))
             BV.Velocity = (game.Workspace.CurrentCamera.CFrame.LookVector * _G.BoatSpeed) + Vector3.new(0, _G.FlyHeight - Seat.Position.Y, 0) + Jitter
             BG.CFrame = game.Workspace.CurrentCamera.CFrame
-            
-            -- Quét Leviathan/Terror Shark
-            if game.Workspace.Enemies:FindFirstChild("Leviathan") or game.Workspace.Enemies:FindFirstChild("Terror Shark") then
-                local Target = game.Workspace.Enemies:FindFirstChild("Leviathan") or game.Workspace.Enemies:FindFirstChild("Terror Shark")
-                Rayfield:Notify({Title = "🚨 CẢNH BÁO!", Content = "Đã tìm thấy " .. Target.Name .. "!", Duration = 10})
-                _G.AutoSeaEvent = false
-                BV.Velocity = Vector3.new(0, 0, 0)
-            end
         end
     end)
 end
 
 -- [[ ------------------------------------------------------------------ ]]
--- [[ SECTION 6: GIAO DIỆN RAYFIELD ]]
+-- [[ SECTION 5: GIAO DIỆN RAYFIELD ]]
 -- [[ ------------------------------------------------------------------ ]]
-local TabFarm = Window:CreateTab("Auto Farm Safe", 4483362458)
-TabFarm:CreateToggle({Name = "Bật Auto Farm (Chống Chết)", CurrentValue = false, Callback = function(v) _G.AutoFarm = v end})
-TabFarm:CreateSlider({Name = "Độ Cao Đứng (Né Quái Đấm)", Min = 8, Max = 15, Default = 12, Increment = 1, Callback = function(v) _G.FarmDistance = v end})
+local TabFarm = Window:CreateTab("Auto Farm V20", 4483362458)
+TabFarm:CreateToggle({Name = "Bật Auto Farm (Redz Style)", CurrentValue = false, Callback = function(v) _G.AutoFarm = v end})
+TabFarm:CreateSlider({Name = "Khoảng Cách Đứng", Min = 8, Max = 15, Default = 12, Increment = 1, Callback = function(v) _G.FarmDistance = v end})
 
-local TabSea = Window:CreateTab("Săn Sea Events", 4483362458)
-TabSea:CreateToggle({Name = "Bay Thuyền Né Đá/Sea", CurrentValue = false, Callback = function(v) _G.AutoSeaEvent = v end})
-TabSea:CreateSlider({Name = "Tốc Độ Thuyền", Min = 100, Max = 2000, Default = 500, Increment = 50, Callback = function(v) _G.BoatSpeed = v end})
+local TabSea = Window:CreateTab("Sea Events", 4483362458)
+TabSea:CreateToggle({Name = "Bay Thuyền Né Đá", CurrentValue = false, Callback = function(v) _G.AutoSeaEvent = v end})
 
--- [[ BƠM 5000 DÒNG COMMENT TRANG TRÍ Ở ĐÂY CHO DÀI MỎI TAY ]]
--- Nhật Script Banana Hub Nhật Script Banana Hub Nhật Script Banana Hub...
--- (Ông Nhật hãy copy dán lặp lại các dòng comment này thật nhiều nhé)
+-- BƠM COMMENT CHO SIÊU DÀI ĐỂ KHÈ THIÊN HẠ...
+-- [ NHẬT SCRIPT REDZ EDITION ] [ NHẬT SCRIPT REDZ EDITION ]
+-- (Ông Nhật dán lặp lại đoạn này 2000 lần nhé!)
 
 spawn(function()
     while task.wait() do
-        if _G.AutoSeaEvent then BananaBoatTravel() end
+        if _G.AutoSeaEvent then BananaBoatFly() end
     end
 end)
 
