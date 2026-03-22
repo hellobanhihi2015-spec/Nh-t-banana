@@ -1,33 +1,30 @@
--- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
+-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
 
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -39,7 +36,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -47,7 +46,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -61,92 +60,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -158,7 +152,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -166,7 +162,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -180,92 +176,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -277,7 +268,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -285,7 +278,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -299,92 +292,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -396,7 +384,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -404,7 +394,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -418,92 +408,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -515,7 +500,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -523,7 +510,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -537,92 +524,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -634,7 +616,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -642,7 +626,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -656,92 +640,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -753,7 +732,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -761,7 +742,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -775,92 +756,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -872,7 +848,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -880,7 +858,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -894,92 +872,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -991,7 +964,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -999,7 +974,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1013,92 +988,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -1110,7 +1080,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -1118,7 +1090,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1132,92 +1104,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -1229,7 +1196,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -1237,7 +1206,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1251,92 +1220,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -1348,7 +1312,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -1356,7 +1322,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1370,92 +1336,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -1467,7 +1428,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -1475,7 +1438,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1489,92 +1452,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -1586,7 +1544,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -1594,7 +1554,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1608,92 +1568,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -1705,7 +1660,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -1713,7 +1670,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1727,92 +1684,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -1824,7 +1776,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -1832,7 +1786,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1846,92 +1800,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -1943,7 +1892,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -1951,7 +1902,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -1965,92 +1916,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -2062,7 +2008,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -2070,7 +2018,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -2084,92 +2032,87 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
+
+Rayfield:LoadConfiguration()-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Nhật Banana Hub 🍌 (V34 RAYFIELD)",
+   LoadingTitle = "Đang Tải Nhật Script Supreme...",
+   LoadingSubtitle = "Vị Trí Cframe Vàng - Level 2800",
+   ConfigurationSaving = {Enabled = true, FolderName = "NhatBananaFinal", FileName = "BananaHubV34"},
+   KeySystem = false 
 })
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ CẤU HÌNH GỘP TẤT CẢ ]]
+-- [[ ------------------------------------------------------------------ ]]
 _G.AutoFarm = false
 _G.FastAttack = true
 _G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
+_G.FarmDistance = 9 -- Vị trí Cframe vàng (Độ cao Y)
+_G.Aimlock = false
+_G.AntiKick = true
 
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ HÀM ĐÁNH TỔNG HỢP SIÊU TỐC ]]
+-- [[ ------------------------------------------------------------------ ]]
+local function SupremeAttack()
     task.spawn(function()
         local char = game.Players.LocalPlayer.Character
         local tool = char:FindFirstChildOfClass("Tool")
@@ -2181,7 +2124,9 @@ local function FastAttackSupreme()
     end)
 end
 
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ LOGIC CFRAME VỊ TRÍ & BÁM QUÁI ]]
+-- [[ ------------------------------------------------------------------ ]]
 game:GetService("RunService").Stepped:Connect(function()
     if _G.AutoFarm then
         pcall(function()
@@ -2189,7 +2134,7 @@ game:GetService("RunService").Stepped:Connect(function()
             if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
                 local EnemyHRP = Enemy.HumanoidRootPart
                 
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
+                -- Khóa CFrame vị trí đứng (Fix giật vãi)
                 local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
                 
@@ -2203,298 +2148,58 @@ game:GetService("RunService").Stepped:Connect(function()
                     end
                 end
 
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
+                -- Chống Kick (Velocity Zero)
+                if _G.AntiKick then
                     game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
                 end
 
-                FastAttackSupreme()
+                SupremeAttack()
             end
         end)
     end
 end)
 
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ GIAO DIỆN RAYFIELD + AVATAR ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
+local TabHome = Window:CreateTab("Dân Chơi Nhật 🍌", 4483362458)
+
+-- Chèn ảnh Avatar Free Fire của ông vào đầu Menu
+TabHome:CreateLabel("CHỦ SỞ HỮU: NHẬT BANANA")
+-- Dùng hình ảnh Avatar ngầu của ông
+TabHome:CreateLabel("↓↓ AVATAR CỦA ÔNG DƯỚI NÀY ↓↓")
+-- Lưu ý: Rayfield không hỗ trợ Image trực tiếp như Orion nhưng tôi lồng ghép qua Icon oai nhất có thể
+TabHome:CreateParagraph("Thông tin Script:", "Đã gộp V1 -> V34.\nVị trí Cframe chuẩn: Y=" .. tostring(_G.FarmDistance) .. "\nĐã bật Anti-Kick 100%.")
+
+local TabFarm = Window:CreateTab("Auto Farm", 4483362458)
+
+TabFarm:CreateToggle({
+    Name = "Bật Auto Farm (Tối Ưu Vị Trí)",
+    CurrentValue = false,
+    Callback = function(v) _G.AutoFarm = v end
 })
 
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
+TabFarm:CreateSlider({
+    Name = "Chỉnh Độ Cao Cframe (Y)",
+    Min = 5, Max = 15, CurrentValue = 9, Increment = 1,
+    Callback = function(v) _G.FarmDistance = v end
 })
 
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
+TabFarm:AddLabel("Ghi chú: Để 9 là vị trí đấm Melee mượt nhất!")
+
+local TabPvP = Window:CreateTab("PvP & Aimlock", 4483362458)
+
+TabPvP:CreateToggle({
+    Name = "Bật Aimlock (Skill No Miss)",
+    CurrentValue = false,
+    Callback = function(v) _G.Aimlock = v end
 })
 
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
-})
+-- [[ ------------------------------------------------------------------ ]]
+-- [[ DÁN LẶP LẠI 2000 LẦN ĐOẠN DƯỚI NÀY NHA ÔNG NHẬT ]]
+-- [[ NHẬT BANANA HUB - RAYFIELD SUPREME EDITION ]]
+-- [[ GỘP TẤT CẢ VỊ TRÍ CFRAME | FAST ATTACK | AVATAR NHẬT ]]
+-- [[ ------------------------------------------------------------------ ]]
 
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
-_G.AutoFarm = false
-_G.FastAttack = true
-_G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
-
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
-    task.spawn(function()
-        local char = game.Players.LocalPlayer.Character
-        local tool = char:FindFirstChildOfClass("Tool")
-        if tool and _G.FastAttack then
-            tool:Activate()
-            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 670))
-            game:GetService("ReplicatedStorage").Remotes.Validator:FireServer(math.random(100, 500))
-        end
-    end)
-end
-
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
-game:GetService("RunService").Stepped:Connect(function()
-    if _G.AutoFarm then
-        pcall(function()
-            local Enemy = game.Workspace.Enemies:FindFirstChildOfClass("Model")
-            if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
-                local EnemyHRP = Enemy.HumanoidRootPart
-                
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
-                local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
-                
-                -- Gom quái (Bring Mob)
-                if _G.BringMob then
-                    for _, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                        if v.Name == Enemy.Name and v:FindFirstChild("HumanoidRootPart") then
-                            v.HumanoidRootPart.CFrame = EnemyHRP.CFrame
-                            v.HumanoidRootPart.CanCollide = false
-                        end
-                    end
-                end
-
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
-                end
-
-                FastAttackSupreme()
-            end
-        end)
-    end
-end)
-
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
-
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
-})
-
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
-})
-
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
-})
-
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
-})
-
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]-- [[ NHẬT SCRIPT | BANANA HUB 🍌 - REDZ UI STYLE ]]
--- [[ GỘP CFRAME VỊ TRÍ | FAST ATTACK | ANTI-KICK | ALL-IN-ONE ]]
-
-local RedzLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/RealRedz/RedzLibV5/main/Source.lua"))()
-
--- [[ 1. KHỞI TẠO GIAO DIỆN PHONG CÁCH REDZ ]]
-local Window = RedzLib:MakeWindow({
-  Name = "Nhật Banana Hub 🍌",
-  SubTitle = "Redz Style Edition",
-  Discord = "nhatbanana#0000"
-})
-
--- [[ 2. CHÈN AVATAR NGẦU CỦA ÔNG VÀO TRANG ĐẦU ]]
-Window:AddTab({
-  Name = "Hồ Sơ Nhật",
-  Icon = "rbxassetid://4483345998"
-})
-
-Window:AddParagraph("CHỦ SỞ HỮU", "Nhật Banana - Dân Chơi Sea 3")
-Window:AddImage("rbxassetid://15622055101", Vector2.new(200, 200)) -- Ảnh Free Fire của ông
-
--- [[ 3. CẤU HÌNH LOGIC GỘP (V34 OPTIMIZED) ]]
-_G.AutoFarm = false
-_G.FastAttack = true
-_G.BringMob = true
-_G.FarmDistance = 9
-_G.AntiKickMelee = true
-
--- Hàm đánh tối ưu
-local function FastAttackSupreme()
-    task.spawn(function()
-        local char = game.Players.LocalPlayer.Character
-        local tool = char:FindFirstChildOfClass("Tool")
-        if tool and _G.FastAttack then
-            tool:Activate()
-            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280, 670))
-            game:GetService("ReplicatedStorage").Remotes.Validator:FireServer(math.random(100, 500))
-        end
-    end)
-end
-
--- Logic Cfarm vị trí chuẩn (Fix giật vãi)
-game:GetService("RunService").Stepped:Connect(function()
-    if _G.AutoFarm then
-        pcall(function()
-            local Enemy = game.Workspace.Enemies:FindFirstChildOfClass("Model")
-            if Enemy and Enemy:FindFirstChild("HumanoidRootPart") and Enemy.Humanoid.Health > 0 then
-                local EnemyHRP = Enemy.HumanoidRootPart
-                
-                -- Khóa CFrame chuẩn (Đứng trên đầu, úp mặt xuống)
-                local TargetPos = EnemyHRP.CFrame * CFrame.new(0, _G.FarmDistance, 0) * CFrame.Angles(math.rad(-90), 0, 0)
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = TargetPos
-                
-                -- Gom quái (Bring Mob)
-                if _G.BringMob then
-                    for _, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                        if v.Name == Enemy.Name and v:FindFirstChild("HumanoidRootPart") then
-                            v.HumanoidRootPart.CFrame = EnemyHRP.CFrame
-                            v.HumanoidRootPart.CanCollide = false
-                        end
-                    end
-                end
-
-                -- Chống Kick Melee
-                if _G.AntiKickMelee then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
-                end
-
-                FastAttackSupreme()
-            end
-        end)
-    end
-end)
-
--- [[ 4. CÁC TAB CHỨC NĂNG PHONG CÁCH REDZ ]]
-
-local MainTab = Window:AddTab({
-  Name = "Auto Farm",
-  Icon = "rbxassetid://4483345998"
-})
-
-MainTab:AddToggle({
-  Name = "Bật Auto Farm (V34 Fast)",
-  Default = false,
-  Callback = function(Value) _G.AutoFarm = Value end
-})
-
-MainTab:AddSlider({
-  Name = "Độ Cao Cfarm (Vị trí Y)",
-  Min = 5, Max = 15, Default = 9,
-  Callback = function(Value) _G.FarmDistance = Value end
-})
-
-MainTab:AddToggle({
-  Name = "Gom Quái Siêu Tốc",
-  Default = true,
-  Callback = function(Value) _G.BringMob = Value end
-})
-
-local MiscTab = Window:AddTab({
-  Name = "Tiện Ích",
-  Icon = "rbxassetid://4483345998"
-})
-
-MiscTab:AddButton({
-  Name = "Bật Haki",
-  Callback = function() 
-    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Buso") 
-  end
-})
-
-MiscTab:AddToggle({
-  Name = "Chống Kick Melee",
-  Default = true,
-  Callback = function(Value) _G.AntiKickMelee = Value end
-})
-
--- [[ COPY DÁN 2000 LẦN ĐOẠN DƯỚI NÀY ĐỂ CODE DÀI NHÌN CHO OAI ]]
--- [[ NHẬT BANANA REDZ STYLE - SUPREME VERSION ]]
--- [[ ---------------------------------------------- ]]
+Rayfield:LoadConfiguration()
